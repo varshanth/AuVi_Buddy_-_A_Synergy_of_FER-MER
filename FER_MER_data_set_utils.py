@@ -24,7 +24,8 @@ _oulu_casia_get_data_set_args = {
 
 _oulu_casia_config = {
                 '_oulu_casia_get_data_set_args' :_oulu_casia_get_data_set_args,
-                '_im_per_seq' : 9, # Default = _max_im_per_seq
+                '_im_per_seq' : _oulu_casia_get_data_set_args[
+                        '_max_im_per_seq'],
                 '_emotion_label_to_idx' : _emotion_label_to_idx
                 }
                 
@@ -53,7 +54,8 @@ class oulu_casia_ds(object):
                  train_data_gen_config = _oulu_casia_train_set_data_gen_config,
                  test_data_gen_config = _oulu_casia_test_set_data_gen_config,
                  test_set_fraction = 0.1,
-                 normalize_and_center = False):
+                 normalize_and_center = False,
+                 shuffle_data = True):
         '''
         Input 1: OULU CASIA Data Set Mode (Default: sequence)
         Input 2: Data Set Configuration Dictionary (Default in lib)
@@ -61,6 +63,7 @@ class oulu_casia_ds(object):
         Input 4: Testing Set Image Data Generator Dictionary (Default in lib)
         Input 5: Fraction of dataset dedicated for test set (Default: 0.1)
         Input 6: Normalize and Center Images Flag (Default: False)
+        Input 7: Flag to indicate whether to shuffle data randomly or not
         Purpose: Initialize OULU CASIA Data Set
         Output: None
         '''
@@ -88,9 +91,8 @@ class oulu_casia_ds(object):
         
         # Perform training and test set split
         self.X_train, self.X_test, self.y_train, self.y_test = (
-                train_test_split(X,
-                                 y,
-                                 test_size = test_set_fraction))
+                train_test_split(X, y, test_size = test_set_fraction,
+                                 shuffle = shuffle_data))
         # Normalize and center images if flag is set
         if normalize_and_center:
             self.normalize_and_center_images()
