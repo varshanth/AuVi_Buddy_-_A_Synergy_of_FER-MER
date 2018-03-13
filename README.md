@@ -29,8 +29,15 @@ Some appropriate responses can be (not limited to):
 ## Scope of Project:  
 We limit the scope of this project to developing the trigger of Facial Expression Recognition (FER) (1a) and deliver the responses of Music Therapy (3a), Emotional State Statistics (3f) and if time permits, Visual Therapy (3b).
 
-## Facial Expression Recognition  
-Documentation will be updated soon  
+## Facial Expression Recognition: Video Classification using CNN - RNN Pipeline  
+Datasets Used:  
+
+1. Oulu CASIA NIR & VIS Facial Expression Database:  
+G. Zhao, X. Huang, M. Taini, S.Z. Li & M. Pietikäinen (2011): Facial expression
+recognition from near-infrared videos. Image and Vision Computing,
+29(9):607-619.  
   
-## Music Emotion Recognition  
+Documentation will be updated soon  
+ 
+## Music Emotion Recognition: Audio Spectrogram Classification using LRCN
 Documentation will be updates soon  
