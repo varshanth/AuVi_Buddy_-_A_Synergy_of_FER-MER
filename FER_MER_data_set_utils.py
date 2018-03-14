@@ -2,6 +2,9 @@ from oulu_casia_utils import (oulu_casia_get_data_set,
                               oulu_casia_expand_sequences,
                               _emotion_label_to_idx)
 import numpy as np
+import os
+import re
+from PIL import Image
 from keras.utils import to_categorical
 from copy import copy
 from keras.preprocessing.image import ImageDataGenerator
@@ -18,7 +21,7 @@ _oulu_casia_ds_mode = {
 _oulu_casia_get_data_set_args = {
         '_images_root_path' : '/home/varsrao/Downloads/OriginalImg',
         '_max_im_per_seq' : 9,
-        '_image_resolution' : (240, 240)
+        '_image_resolution' : (224, 224)
         }
 
 
@@ -250,4 +253,29 @@ class oulu_casia_ds(object):
         Output: OULU CASIA Data Set Configuration as a dictionary
         '''
         return self._oulu_casia_config
+
+
+def inference_from_evaluate(evaluate_dir,
+                            names_label_mapping,
+                            resolution = None):
+    '''
+    Input 1: Path to Evaluate Directory
+    Input 2: Dictionary where key is name of file and value is the label
+    Input 3: Resize resolution (Default is None to retain original)
+    Purpose: Export as numpy array the images and the names as the labels
+    Output: [[Images], [Labels]]
+    '''
+    if not os.path.exists(evaluate_dir):
+        raise Exception('Directory does not exist')
     
+    file_name_without_extension = re.compile('(.*)\..*')
+    images = []
+    labels = []
+    for file_name in os.listdir(evaluate_dir):
+        img = Image.open(evaluate_dir + '/' + file_name)
+        if resolution:
+            img = img.resize(resolution)
+        images.append(np.array(img))
+        name = file_name_without_extension.findall(file_name)[0]
+        labels.append(names_label_mapping[name])
+    return [images, labels]

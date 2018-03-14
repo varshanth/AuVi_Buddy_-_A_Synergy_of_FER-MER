@@ -18,6 +18,8 @@ oulu_casia_dataset.labels_to_categorical()
 ############################## LOAD MODEL #####################################
 sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
 model = fer_dense_net(img_shape, _num_classes)
+save_model = True
+_model_save_file_path = './FER_CNN_model.h5'
 
 model.compile(loss = 'categorical_crossentropy',
               optimizer = sgd,
@@ -27,7 +29,7 @@ model.summary()
 ############################# TRAIN MODEL #####################################
 
 # Training Configuration
-checkpoint_file_name = 'FER_CNN_weights_best.h5'
+_checkpoint_file_name = 'FER_CNN_weights_best.h5'
 batch_size = 32
 flow_gen_args = {'batch_size' : batch_size}
 req_training_set_size = 10000
@@ -37,7 +39,7 @@ validation_steps_per_epoch = req_testing_set_size // batch_size
 num_epochs = 100
 
 # Configure Checkpoint
-checkpoint = ModelCheckpoint(checkpoint_file_name, 
+checkpoint = ModelCheckpoint(_checkpoint_file_name, 
                              monitor = 'val_acc',
                              verbose = 1,
                              save_best_only = True,
@@ -52,3 +54,6 @@ history = model.fit_generator(
         callbacks = [checkpoint],
         verbose = 1,
         epochs = num_epochs)
+
+if save_model:
+    model.save(_model_save_file_path)

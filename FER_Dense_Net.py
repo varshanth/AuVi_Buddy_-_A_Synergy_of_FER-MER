@@ -8,13 +8,12 @@ from keras.layers import Conv2D, Dense
 from keras.layers.pooling import GlobalAveragePooling2D
 from keras.models import Model
 from keras.utils.vis_utils import plot_model
-from ArchLayers import (_preactivation_layers, _create_input_layer,
-                        _dense_layer, _dense_transition)
+from ArchLayers import _create_input_layer, _dense_layer, _dense_transition
 
 
 def fer_dense_net(_input_shape, _n_classes):
     '''
-    Expected Image Size for OULU CASIA: 240x240xd (channel last)
+    Expected Image Size for OULU CASIA: 224x224xd (channel last)
 			|
 			v
     2D: 7x7 D_OUT= D
@@ -65,7 +64,7 @@ def fer_dense_net(_input_shape, _n_classes):
     
     Output Sizes:
     *************
-    Input Size = 240 x 240
+    Input Size = 224 x 224
     Output Size After ith Transition:
 		1: 16 x 16
 		2: 8 x 8
@@ -102,7 +101,7 @@ def fer_dense_net(_input_shape, _n_classes):
 if __name__ == '__main__':
     print('\nFER Densely Connected CNN')
     print('*********************\n')
-    model = fer_dense_net((240,240,3),7)
+    model = fer_dense_net((224,224,3),7)
     model.summary()
     save = int(input('Save Model Visualization to file? 0|1\n'))
     if save > 0:
