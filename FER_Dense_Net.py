@@ -13,10 +13,10 @@ from ArchLayers import _create_input_layer, _dense_layer, _dense_transition
 
 def fer_dense_net(_input_shape, _n_classes):
     '''
-    Expected Image Size for OULU CASIA: 224x224xd (channel last)
+    Expected Image Size for OULU CASIA: 128x128xd (channel last)
 			|
 			v
-    2D: 7x7 D_OUT= D
+    2D: 5x5 D_OUT= D
 			|
 			v
     Dense_Block0: (D_IN = D->([1x1xGR_LIMIT], 3x3) -> D_OUT= D_IN + G_RATE) * (LAYERS_PER_BLOCK=4)
@@ -48,23 +48,24 @@ def fer_dense_net(_input_shape, _n_classes):
 			v
     '''
     print('Architecture: FER Dense Network')
-    _d_init = 96 # Initial Depth
+    _d_init = 64 # Initial Depth
     _growth_limit = 384 #  Growth Limit
     _n_dense_blocks = 4 # Number of Dense Blocks
     # Number of Dense Layers per block
-    _n_dense_layers_per_block = (6, 12, 24, 16)
+    _n_dense_layers_per_block = (4, 4, 8, 6)
+    _compress_factor = 1.0 # Compress Factor during Transition
     growth_rate = 16 # Growth Rate for dense layers
+    _growth_rate_mul = 2 # Growth Rate Multiplier to be used between blocks
 
     input_layer = _create_input_layer(_input_shape)
-    intermed = Conv2D(_d_init, kernel_size=(7,7), strides=(2, 2),
-                      padding='same')(input_layer)
+    intermed = Conv2D(_d_init, kernel_size=(5,5), strides=(2, 2))(input_layer)
     new_depth = _d_init
     '''
     TO_CORRECT:
     
     Output Sizes:
     *************
-    Input Size = 224 x 224
+    Input Size = 128 x 128
     Output Size After ith Transition:
 		1: 16 x 16
 		2: 8 x 8
@@ -90,7 +91,10 @@ def fer_dense_net(_input_shape, _n_classes):
             # No Dense Transition for last layer
             intermed = _dense_transition(intermed, new_depth,
                                          int(new_depth))
-            
+        # Impose Dynamic Growth Rate
+        growth_rate = int(growth_rate * _growth_rate_mul)
+        new_depth = int(_compress_factor * new_depth)
+        
     gap_out = GlobalAveragePooling2D()(intermed)
     dense_out = Dense(128, activation='relu')(gap_out) 
     final_out = Dense(_n_classes, activation='softmax')(dense_out)
@@ -101,7 +105,7 @@ def fer_dense_net(_input_shape, _n_classes):
 if __name__ == '__main__':
     print('\nFER Densely Connected CNN')
     print('*********************\n')
-    model = fer_dense_net((224,224,3),7)
+    model = fer_dense_net((128,128,3),7)
     model.summary()
     save = int(input('Save Model Visualization to file? 0|1\n'))
     if save > 0:

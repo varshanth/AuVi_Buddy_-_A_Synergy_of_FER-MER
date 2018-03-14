@@ -20,7 +20,7 @@ _emotion_label_to_idx = _oulu_casia_dataset_config['_emotion_label_to_idx']
 _evaluate_directory = './Evaluate'
 X_test, y_test = inference_from_evaluate(_evaluate_directory,
                                          _emotion_label_to_idx,
-                                         (224,224))
+                                         (128,128))
 y_test_as_categorical = to_categorical(y_test, len(_emotion_label_to_idx))
 y_pred_one_hot = model.predict(X_test)
 y_pred_as_label = np.argmax(y_pred_one_hot, axis=1)

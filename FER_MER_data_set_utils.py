@@ -21,7 +21,7 @@ _oulu_casia_ds_mode = {
 _oulu_casia_get_data_set_args = {
         '_images_root_path' : '/home/varsrao/Downloads/OriginalImg',
         '_max_im_per_seq' : 9,
-        '_image_resolution' : (224, 224)
+        '_image_resolution' : (128, 128)
         }
 
 
