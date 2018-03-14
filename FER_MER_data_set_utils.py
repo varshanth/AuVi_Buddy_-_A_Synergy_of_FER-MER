@@ -278,4 +278,6 @@ def inference_from_evaluate(evaluate_dir,
         images.append(np.array(img))
         name = file_name_without_extension.findall(file_name)[0]
         labels.append(names_label_mapping[name])
+    images = np.array(images)
+    labels = np.array(labels)
     return [images, labels]
