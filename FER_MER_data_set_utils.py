@@ -281,6 +281,15 @@ class oulu_casia_ds(object):
         Output: OULU CASIA Data Set Configuration as a dictionary
         '''
         return self._oulu_casia_config
+    
+    
+    def get_data_set(self):
+        '''
+        Input: None
+        Purpose: A getter function to read the OULU CASIA dataset
+        Output: [Train Data, Train Labels, Test Data, Test Labels]
+        '''
+        return [self.X_train, self.y_train, self.X_test, self.y_test]
 
 
 def inference_from_evaluate(evaluate_dir,

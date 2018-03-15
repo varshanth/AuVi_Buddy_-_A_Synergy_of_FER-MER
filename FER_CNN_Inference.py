@@ -11,8 +11,13 @@ if not os.path.exists(_model_save_file_path):
             _model_save_file_path))
 
 model = load_model(_model_save_file_path)
-
+'''
+Insert Code to Get Model Last Layer Here
+'''
 ########################## LOAD INFERENCE DATA ################################
+'''
+TESTING CODE:
+    
 oulu_casia_dataset = oulu_casia_ds(dataset_mode = 'modified_expanded',
                                    normalize_mode = 'optical_flow')
 _oulu_casia_dataset_config = oulu_casia_dataset.get_data_set_config()
@@ -28,3 +33,25 @@ y_pred_as_idx = np.argmax(y_pred_one_hot, axis=1)
 y_pred_as_label = np.array(
         [_idx_to_emotion_label[idx] for idx in y_pred_as_idx])
 print(y_pred_as_label)
+'''
+
+################### LOAD SEQUENTIAL OULU CASIA DATASET ########################
+oulu_casia_sequential_data = oulu_casia_ds(dataset_mode = 'sequence',
+                                           shuffle_data = False,
+                                           test_set_fraction = 0)
+
+X, y, not_used_0, not_used_1 = oulu_casia_sequential_data.get_data_set()
+
+latent_X = []
+for img_sequence in X:
+    latent_sequence = []
+    for img in img_sequence:
+        '''
+        latent_img_representation = GAP_Out_Model(np.array([img]))
+        '''
+        latent_sequence.append(latent_img_representation)
+    latent_sequence = np.array(latent_sequence)
+    latent_X.append(latent_sequence)
+latent_X = np.array(latent_X)
+        
+    
