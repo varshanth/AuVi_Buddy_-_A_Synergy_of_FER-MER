@@ -36,8 +36,19 @@ Datasets Used:
 G. Zhao, X. Huang, M. Taini, S.Z. Li & M. Pietikäinen (2011): Facial expression
 recognition from near-infrared videos. Image and Vision Computing,
 29(9):607-619.  
+
+### References:
+1. The little "bird" which helped us to go in the right direction:  
+https://blog.coast.ai/continuous-online-video-classification-with-tensorflow-inception-and-a-raspberry-pi-785c8b1e13e1
   
 Documentation will be updated soon  
  
 ## Music Emotion Recognition: Audio Spectrogram Classification using LRCN
 Documentation will be updates soon  
+
+### References:
+1. The best explanation I have read on choosing CNN filter sizes for spectrograms by Jordi Pons:  
+http://www.jordipons.me/cnn-filter-shapes-discussion/  
+
+2. Different approach but less explicitly explained - still useful:  
+http://deepsound.io/music_genre_recognition.html
