@@ -147,6 +147,9 @@ class oulu_casia_ds(object):
         # Last 5 images representing labelled emotion
         mask[-5:] = True
         new_im_per_seq = len(mask[mask == True])
+        X, y = self._get_ds_as_expanded()
+        new_images = []
+        new_labels = []
         # Add "Neutral" to Emotion Labels
         self.add_custom_emotion_labels(['Neutral'])
         # Modify 1st label to be "Neutral Expression"
@@ -154,9 +157,6 @@ class oulu_casia_ds(object):
                 # Index : Emotion
                 0 : 'Neutral'
                 }
-        X, y = self._get_ds_as_expanded()
-        new_images = []
-        new_labels = []
         # Go through each sequence, mask the sequence and modify the labels
         for i in range(len(X) // _max_im_per_seq):
             start = i * _max_im_per_seq
