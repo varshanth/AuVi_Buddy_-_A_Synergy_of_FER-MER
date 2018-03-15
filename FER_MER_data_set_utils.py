@@ -48,6 +48,12 @@ _oulu_casia_test_set_data_gen_config = {
                 'horizontal_flip' : True
                 }
 
+_oulu_casia_normalize_mode = {
+        'none', 
+        'optical_flow',
+        'normalize_and_center'
+        }
+
 
 class oulu_casia_ds(object):
     
@@ -57,7 +63,7 @@ class oulu_casia_ds(object):
                  train_data_gen_config = _oulu_casia_train_set_data_gen_config,
                  test_data_gen_config = _oulu_casia_test_set_data_gen_config,
                  test_set_fraction = 0.1,
-                 normalize_and_center = False,
+                 normalize_mode = 'none',
                  shuffle_data = True):
         '''
         Input 1: OULU CASIA Data Set Mode (Default: sequence)
@@ -65,7 +71,9 @@ class oulu_casia_ds(object):
         Input 3: Training Set Image Data Generator Dictionary (Default in lib)
         Input 4: Testing Set Image Data Generator Dictionary (Default in lib)
         Input 5: Fraction of dataset dedicated for test set (Default: 0.1)
-        Input 6: Normalize and Center Images Flag (Default: False)
+        Input 6: Normalize and Center Images Flag
+                 0: None
+                 1: Normalize and center
         Input 7: Flag to indicate whether to shuffle data randomly or not
         Purpose: Initialize OULU CASIA Data Set
         Output: None
@@ -75,6 +83,8 @@ class oulu_casia_ds(object):
             raise Exception('Invalid Data Set Mode')
         if test_set_fraction > 1 or test_set_fraction < 0:
             raise Exception('Invalid Test Set Fraction')
+        if normalize_mode not in _oulu_casia_normalize_mode:
+            raise Exception('Invalid Normalization Mode')
         
         # Configure instance
         self._oulu_casia_config = copy(data_set_config)
@@ -82,6 +92,7 @@ class oulu_casia_ds(object):
                 train_data_gen_config)
         self._oulu_casia_test_set_data_gen_config = copy(test_data_gen_config)
         self.dataset_mode = dataset_mode
+        self.normalize_mode = normalize_mode
         
         # Get raw dataset
         if dataset_mode == 'sequence':
@@ -96,27 +107,31 @@ class oulu_casia_ds(object):
         self.X_train, self.X_test, self.y_train, self.y_test = (
                 train_test_split(X, y, test_size = test_set_fraction,
                                  shuffle = shuffle_data))
+                
         # Normalize and center images if flag is set
-        if normalize_and_center:
+        if normalize_mode == 'normalize_and_center':
             self.normalize_and_center_images()
-            
-        # Initialize the ImageDataGenerators
-        self.train_datagen = ImageDataGenerator(
-                **self._oulu_casia_train_set_data_gen_config)
-        self.train_datagen.fit(self.X_train)
-        self.test_datagen = ImageDataGenerator(
-                **self._oulu_casia_test_set_data_gen_config)
-        self.test_datagen.fit(self.X_test)
+        
+        if dataset_mode != 'sequence':
+            # Initialize the ImageDataGenerators
+            self.train_datagen = ImageDataGenerator(
+                    **self._oulu_casia_train_set_data_gen_config)
+            self.train_datagen.fit(self.X_train)
+            self.test_datagen = ImageDataGenerator(
+                    **self._oulu_casia_test_set_data_gen_config)
+            self.test_datagen.fit(self.X_test)
 
     
     def _get_ds_as_sequence(self):
         '''
-        Input: None
+        Input 1: Optical Flow Normalization Flag
         Purpose: Wrapper for oulu_casia_get_data_set
         Output: Output of oulu_casia_get_data_set
         '''
         X, y = oulu_casia_get_data_set(
                 **self._oulu_casia_config['_oulu_casia_get_data_set_args'])
+        if self.normalize_mode == 'optical_flow':
+            X = self.optical_flow_norm(X)
         return [X, y]
     
     
@@ -237,13 +252,26 @@ class oulu_casia_ds(object):
         '''
         Input: None
         Purpose: Subract images values by the mean and divide the difference by
-                 the standard deviation
+                 max value
         Output: None
         '''
-        self.X_train = ((self.X_train - self.X_train.mean(axis=0)) /
-                        self.X_train.std(axis=0))
-        self.X_test = ((self.X_test - self.X_test.mean(axis=0)) /
-                       self.X_test.std(axis=0))
+        self.X_train = (self.X_train - self.X_train.mean(axis=0)) / 255
+        self.X_test = (self.X_test - self.X_test.mean(axis=0)) / 255
+
+
+    def optical_flow_norm(self, X):
+        '''
+        Input: Sequence of images as a 5D Numpy array
+        Purpose: Center images with respect to images in the sequence to get
+                 optical flow of images
+        Output: Sequence of images centered with respect to the images in the
+                sequence
+        '''
+        for seq_idx, sequence in enumerate(X):
+            sequence = sequence - sequence.mean(axis = 0)
+            sequence += sequence.min()
+            X[seq_idx] = sequence
+        return X
 
 
     def get_data_set_config(self):
@@ -263,6 +291,11 @@ def inference_from_evaluate(evaluate_dir,
     Input 2: Dictionary where key is name of file and value is the label
     Input 3: Resize resolution (Default is None to retain original)
     Purpose: Export as numpy array the images and the names as the labels
+             
+             TO BE USED ONLY WHEN TRAINING IS
+             DONE WITHOUT NORMALIZATION FOR
+             MODIFIED EXPANDED DATASET MODE
+             
     Output: [[Images], [Labels]]
     '''
     if not os.path.exists(evaluate_dir):
@@ -281,3 +314,27 @@ def inference_from_evaluate(evaluate_dir,
     images = np.array(images)
     labels = np.array(labels)
     return [images, labels]
+
+
+def get_image_seq_apply_optical_flow_norm(img_seq_dir,
+                                          resolution = None):
+    '''
+    Input 1: Path to the image sequence directory
+    Input 2: Resize resolution (Default is None to retain original)
+    Purpose: Get image sequence from a directory and return as numpy array of
+             optical flow normalized images
+    Output: Numpy array of optical flow normalized images in order
+    '''
+    if not os.path.exists(img_seq_dir):
+        raise Exception('Directory does not exist')
+    images = []
+    for file_name in sorted(os.listdir(img_seq_dir)):
+        img = Image.open(img_seq_dir + '/' + file_name)
+        if resolution:
+            img = img.resize(resolution)
+        images.append(np.array(img))
+    images = np.array(images)
+    images = images - images.mean(axis = 0)
+    images += images.min()
+    return images
+        
