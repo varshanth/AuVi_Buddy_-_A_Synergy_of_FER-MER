@@ -15,17 +15,15 @@ _lighting_conditions = {
         'Weak'
         }
 
-_emotion_labels = {
-        'Anger',
-        'Disgust',
-        'Fear',
-        'Happiness',
-        'Sadness',
-        'Surprise'
+_emotion_label_to_idx = {
+        'Anger' : 0,
+        'Disgust' : 1,
+        'Fear' : 2,
+        'Happiness' : 3,
+        'Sadness' : 4,
+        'Surprise' : 5
         }
 
-_emotion_label_to_idx = {
-        label:index for index, label in enumerate(_emotion_labels)}
 
 _image_extension = 'jpeg'
 _image_width = 320
@@ -100,6 +98,7 @@ def oulu_casia_get_data_set(_images_root_path,
     sequences = {}
     min_sequence = float('inf')
     _file_extension = re.compile('.*\.(.*)')
+    _emotion_labels = set(_emotion_label_to_idx.keys())
     for person in os.listdir(next_path):
         person_path = next_path + '/' + person
         emotion_dirs = set(os.listdir(person_path))
