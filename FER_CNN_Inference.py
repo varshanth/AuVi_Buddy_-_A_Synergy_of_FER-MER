@@ -44,14 +44,10 @@ X, y, not_used_0, not_used_1 = oulu_casia_sequential_data.get_data_set()
 
 latent_X = []
 for img_sequence in X:
-    latent_sequence = []
-    for img in img_sequence:
-        '''
-        latent_img_representation = GAP_Out_Model(np.array([img]))
-        '''
-        latent_sequence.append(latent_img_representation)
-    latent_sequence = np.array(latent_sequence)
-    latent_X.append(latent_sequence)
+    '''
+    latent_img_representation = GAP_Out_Model.predict(img_sequence)
+    '''
+    latent_X.append(latent_img_representation)
 latent_X = np.array(latent_X)
         
     
