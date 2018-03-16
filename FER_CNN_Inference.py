@@ -4,13 +4,15 @@ from FER_MER_data_set_utils import (oulu_casia_ds,
                                     get_image_seq_apply_optical_flow_norm)
 import numpy as np
 import os
-
+'''
 ############################## LOAD MODEL #####################################
 if not os.path.exists(_model_save_file_path):
     raise Exception('Model file {0} does not exist'.format(
             _model_save_file_path))
 
 model = load_model(_model_save_file_path)
+
+'''
 '''
 Insert Code to Get Model Last Layer Here
 '''

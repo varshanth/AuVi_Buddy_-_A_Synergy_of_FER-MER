@@ -29,7 +29,7 @@ _oulu_casia_config = {
                 '_oulu_casia_get_data_set_args' :_oulu_casia_get_data_set_args,
                 '_im_per_seq' : _oulu_casia_get_data_set_args[
                         '_max_im_per_seq'],
-                '_emotion_label_to_idx' : _emotion_label_to_idx
+                '_emotion_label_to_idx' : copy(_emotion_label_to_idx)
                 }
                 
 
