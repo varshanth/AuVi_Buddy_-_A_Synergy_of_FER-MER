@@ -10,6 +10,7 @@ from keras.models import Model
 from keras.utils.vis_utils import plot_model
 from ArchLayers import _create_input_layer, _dense_layer, _dense_transition
 
+latent_rep_layer_name = 'GAP_Out'
 
 def fer_dense_net(_input_shape, _n_classes):
     '''
@@ -95,7 +96,7 @@ def fer_dense_net(_input_shape, _n_classes):
         growth_rate = int(growth_rate * _growth_rate_mul)
         new_depth = int(_compress_factor * new_depth)
         
-    gap_out = GlobalAveragePooling2D()(intermed)
+    gap_out = GlobalAveragePooling2D(name = latent_rep_layer_name)(intermed)
     dense_out = Dense(128, activation='relu')(gap_out) 
     final_out = Dense(_n_classes, activation='softmax')(dense_out)
     model = Model(inputs=input_layer, outputs=final_out, name='FER_Dense_Net')
