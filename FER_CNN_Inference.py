@@ -28,6 +28,32 @@ y_pred_as_label = np.array(
 print(y_pred_as_label)
 '''
 
+
+def fer_cnn_get_latent_rep_from_sequences(image_sequences):
+    '''
+    Input 1: Image Sequences
+    Purpose: 1) Load the Saved FER CNN Model
+             2) Get output from GAP Layer for each of the image
+                for each image sequence
+             3) Return the Latent Representation from the images
+    Output: Latent representation of the image sequence
+    '''
+        ############################ LOAD MODEL ###################################
+    if not os.path.exists(_model_save_file_path):
+        raise Exception('Model file {0} does not exist'.format(
+                _model_save_file_path))
+    
+    model = load_model(_model_save_file_path)
+    GAP_Out_Model = Model(inputs = model.input, outputs = model.get_layer(
+            latent_rep_layer_name).output)
+    latent_X = []
+    for img_sequence in image_sequences:
+        latent_img_representation = GAP_Out_Model.predict(img_sequence)
+        latent_X.append(latent_img_representation)
+    latent_X = np.array(latent_X)
+    return latent_X
+
+
 def fer_cnn_get_latent_rep_data_set():
     '''
     Input: None
@@ -39,25 +65,15 @@ def fer_cnn_get_latent_rep_data_set():
              5) Return the dataset
     Output: [Latent Representation of Image Sequences, Labels]
     '''
-    ############################ LOAD MODEL ###################################
-    if not os.path.exists(_model_save_file_path):
-        raise Exception('Model file {0} does not exist'.format(
-                _model_save_file_path))
-    
-    model = load_model(_model_save_file_path)
-    GAP_Out_Model = Model(inputs = model.input, outputs = model.get_layer(
-            latent_rep_layer_name).output)
     ################### LOAD SEQUENTIAL OULU CASIA DATASET ####################
     oulu_casia_sequential_data = oulu_casia_ds(dataset_mode = 'sequence',
                                                shuffle_data = False,
                                                test_set_fraction = 0)
     oulu_casia_sequential_data.labels_to_categorical()
     X, y, not_used_0, not_used_1 = oulu_casia_sequential_data.get_data_set()
-    latent_X = []
-    for img_sequence in X:
-        latent_img_representation = GAP_Out_Model.predict(img_sequence)
-        latent_X.append(latent_img_representation)
-    latent_X = np.array(latent_X)
+    latent_X = fer_cnn_get_latent_rep_from_sequences(X)
     return [latent_X, y]
         
+
+
     

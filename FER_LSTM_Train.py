@@ -30,8 +30,3 @@ if __name__ == '__main__':
         model.save(_model_save_file_path)
 
 
-
-
-
-
-
