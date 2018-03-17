@@ -51,4 +51,8 @@ Documentation will be updates soon
 http://www.jordipons.me/cnn-filter-shapes-discussion/  
 
 2. Different approach but less explicitly explained - still useful:  
-http://deepsound.io/music_genre_recognition.html
+http://deepsound.io/music_genre_recognition.html  
+
+3. An excellent visual review of the methods:  
+A Tutorial on Deep Learning for Music Information Retrieval - Choi et al.  
+https://arxiv.org/pdf/1709.04396.pdf
