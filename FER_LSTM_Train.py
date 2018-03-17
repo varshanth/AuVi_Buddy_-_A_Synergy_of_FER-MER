@@ -1,6 +1,6 @@
 from FER_LSTM_Net import fer_lstm_net
 from FER_CNN_Inference import fer_cnn_get_latent_rep_data_set
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 
 ########################### GLOBAL CONFIGURATION ##############################
 save_model = True
