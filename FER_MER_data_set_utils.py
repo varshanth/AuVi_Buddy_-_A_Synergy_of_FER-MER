@@ -370,7 +370,8 @@ class deam_ds(object):
                  _image_resolution = None,
                  nEntries = 1744,
                  test_set_fraction = 0.0,
-                 shuffle_data = False):
+                 shuffle_data = False,
+                 center_and_normalize = True):
         '''
         Input 1: Spectrogram Directory Path
         Input 2: Arousal CSV File Path
@@ -379,6 +380,7 @@ class deam_ds(object):
         Input 5: Number of Entries to be read from CSV (Default: 1744)
         Input 6: Test Set Fraction
         Input 7: Shuffle Data (Default: True)
+        Input 8: Center and Normalize Flag (Default: True)
         Purpose: Initialize the DEAM Dataset Class
         Output: None
         '''
@@ -408,6 +410,9 @@ class deam_ds(object):
             img_arr = np.array(img)
             spectro_images.append(img_arr)
         spectro_images = np.array(spectro_images)
+        self.ds_mean = spectro_images.mean(axis = 0)
+        if center_and_normalize:
+            spectro_images = (spectro_images - self.ds_mean) / 255
         self.X_train, self.X_test, self.y_train, self.y_test = (
                 train_test_split(spectro_images, valence_arousal_map,
                                  test_size = test_set_fraction,
@@ -432,3 +437,12 @@ class deam_ds(object):
         Output: [X_train, y_train, X_test, y_test]
         '''
         return [self.X_train, self.y_train, self.X_test, self.y_test]
+    
+    
+    def get_data_set_mean(self):
+        '''
+        Input: None
+        Purpose: Getter function to return the mean of the dataset
+        Output: Data Set Mean
+        '''
+        return self.mean

@@ -1,8 +1,10 @@
-from keras.layers import (Conv2D, Dense, MaxPooling2D, Flatten,
-                          TimeDistributed, Bidirectional, LSTM, concatenate)
+from keras.layers import (Conv2D, Dense, MaxPooling2D, Flatten, Dropout,
+                          TimeDistributed, Bidirectional, LSTM, concatenate,
+                          BatchNormalization)
 from ArchLayers import _create_input_layer, _preactivation_layers
 from keras.models import Model
 from keras.utils.vis_utils import plot_model
+
 
 def mer_spectro_net(_input_shape,
                     _n_out = 120):
@@ -37,7 +39,7 @@ def mer_spectro_net(_input_shape,
     
     _d_init = 64
     _freq_d = [128, 256, 256, 384]
-    _hidden_units_LSTM = 128
+    _hidden_units_LSTM = 512
     
     input_layer = _create_input_layer(_input_shape)
     down_sample_time = Conv2D(_d_init,
@@ -49,21 +51,28 @@ def mer_spectro_net(_input_shape,
     intermed_out = mp_out
     # Create frequency scaling time invariant layers
     for freq_conv_idx, num_filters in enumerate(_freq_d):
+        intermed_out = _preactivation_layers(intermed_out)
         intermed_out = Conv2D(num_filters, kernel_size = (1, 3))(intermed_out)
         intermed_out = _preactivation_layers(intermed_out)
         intermed_out = Conv2D(num_filters, kernel_size = (1, 3))(intermed_out)
         intermed_out = MaxPooling2D(pool_size = (1, 2),
                                     strides = (1, 2))(intermed_out)
+    intermed_out = BatchNormalization()(intermed_out)
     # Distribute Output with respect to Time
     f_time_dis_out = TimeDistributed(Flatten())(intermed_out)
-    
+    f_time_dis_out = TimeDistributed(Dense(1024, activation = 'tanh'))(
+            f_time_dis_out)
+    f_time_dis_out = TimeDistributed(Dropout(0.2))(f_time_dis_out)
+        
     # Feed each time distributed input to 2 BLSTM: for Valence and Arousal 
     valence_lstm_out = Bidirectional(LSTM(_hidden_units_LSTM,
-                                  activation = 'relu'))(f_time_dis_out)
+                                  activation = 'tanh'))(f_time_dis_out)
     arousal_lstm_out = Bidirectional(LSTM(_hidden_units_LSTM,
-                                  activation = 'relu'))(f_time_dis_out)
-    valence_dense = Dense(_n_out // 2, activation = 'relu')(valence_lstm_out)
-    arousal_dense = Dense(_n_out // 2, activation = 'relu')(arousal_lstm_out)
+                                  activation = 'tanh'))(f_time_dis_out)
+    
+    # Arousal and Valence values are between -1 and 1, use tanh activation
+    valence_dense = Dense(_n_out // 2, activation = 'tanh')(valence_lstm_out)
+    arousal_dense = Dense(_n_out // 2, activation = 'tanh')(arousal_lstm_out)
     final_dense = concatenate([valence_dense, arousal_dense])
     model = Model(inputs = input_layer, outputs = final_dense,
                   name = 'MER_Spectro_Net')
