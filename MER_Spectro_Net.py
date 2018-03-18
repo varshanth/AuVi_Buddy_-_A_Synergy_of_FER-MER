@@ -28,9 +28,15 @@ def mer_spectro_net(_input_shape,
                     |
                     v
              Time Distributed Flatten = 60 x D_OUT
+                    |
+                    v
+             Time Distributed Dense = 60 x 1024
              |                                   |  
              v                                   v
           (V) Bidirectional LSTM (N_Hidden)   (A) Bidirectional LSTM (N_Hidden)
+                    |                                   |
+                    v                                   v
+    (V) Bidirectional LSTM (N_Hidden/2)     (A) Bidirectional LSTM (N_Hidden/2)
                     |
                     v
                  Dense: 120x1
@@ -39,7 +45,7 @@ def mer_spectro_net(_input_shape,
     
     _d_init = 64
     _freq_d = [128, 256, 256, 384]
-    _hidden_units_LSTM = 512
+    _hidden_units_LSTM = 256
     
     input_layer = _create_input_layer(_input_shape)
     down_sample_time = Conv2D(_d_init,
@@ -66,9 +72,18 @@ def mer_spectro_net(_input_shape,
         
     # Feed each time distributed input to 2 BLSTM: for Valence and Arousal 
     valence_lstm_out = Bidirectional(LSTM(_hidden_units_LSTM,
-                                  activation = 'tanh'))(f_time_dis_out)
-    arousal_lstm_out = Bidirectional(LSTM(_hidden_units_LSTM,
-                                  activation = 'tanh'))(f_time_dis_out)
+                                          return_sequences = True,
+                                          activation = 'tanh'))(f_time_dis_out)
+    v_dropout_out = Dropout(0.2)(valence_lstm_out)
+    valence_lstm_out = Bidirectional(LSTM(_hidden_units_LSTM,
+                                          activation = 'tanh'))(v_dropout_out)
+    
+    arousal_lstm_out = Bidirectional(LSTM(_hidden_units_LSTM // 2,
+                                          return_sequences = True,
+                                          activation = 'tanh'))(f_time_dis_out)
+    a_dropout_out = Dropout(0.2)(arousal_lstm_out)
+    arousal_lstm_out = Bidirectional(LSTM(_hidden_units_LSTM // 2,
+                                  activation = 'tanh'))(a_dropout_out)
     
     # Arousal and Valence values are between -1 and 1, use tanh activation
     valence_dense = Dense(_n_out // 2, activation = 'tanh')(valence_lstm_out)
