@@ -48,7 +48,7 @@ def load_an_image_sequence_from_dir(sequence_dir,
     for img_name in sorted(os.listdir(sequence_dir)):
         img = Image.open(sequence_dir + '/' +img_name)
         if resolution:
-            img = img.reshape(resolution)
+            img = img.resize(resolution)
         img = np.array(img)
         img_sequence.append(img)
     img_sequence = np.array(img_sequence)

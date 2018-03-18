@@ -4,10 +4,11 @@ from ArchLayers import _create_input_layer, _preactivation_layers
 from keras.models import Model
 from keras.utils.vis_utils import plot_model
 
-def mer_spectro_net(_input_shape, _n_out):
+def mer_spectro_net(_input_shape,
+                    _n_out = 120):
     '''
     Input 1: Spectrogram Input Shape
-    Input 2: Number of Arousal + Valence Values
+    Input 2: Number of Arousal + Valence Values (Default: 60 + 60 = 120)
     Output: MER Spectro Net  Model
     Architecture:
         
@@ -24,13 +25,13 @@ def mer_spectro_net(_input_shape, _n_out):
           (Conv2D (Freq Dim) + Activation + Conv2D (Freq Dim) + Max Pooling)x4
                     |
                     v
-          Time Distributed Flatten = 60 x D_OUT
+             Time Distributed Flatten = 60 x D_OUT
+             |                                   |  
+             v                                   v
+          (V) Bidirectional LSTM (N_Hidden)   (A) Bidirectional LSTM (N_Hidden)
                     |
                     v
-          Bidirectional LSTM (N_Hidden)
-                    |
-                    v
-                 Dense: 60x1
+                 Dense: 120x1
                     
     '''
     
@@ -72,7 +73,7 @@ def mer_spectro_net(_input_shape, _n_out):
 if __name__ == '__main__':
     print('\nMER Spectro Net')
     print('*********************\n')
-    model = mer_spectro_net((120, 240, 3), 120)
+    model = mer_spectro_net((120, 240, 3))
     model.summary()
     save = int(input('Save Model Visualization to file? 0|1\n'))
     if save > 0:

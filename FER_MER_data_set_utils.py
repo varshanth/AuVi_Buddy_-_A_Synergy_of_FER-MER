@@ -4,12 +4,15 @@ from oulu_casia_utils import (oulu_casia_get_data_set,
 import numpy as np
 import os
 import re
+import pandas as pd
 from PIL import Image
 from keras.utils import to_categorical
 from copy import copy
 from keras.preprocessing.image import ImageDataGenerator
 from sklearn.model_selection import train_test_split
 
+
+################### FER DATA SET: OULU CASIA NIR & VIS ########################
 
 _oulu_casia_ds_mode = {
         'sequence',
@@ -19,7 +22,7 @@ _oulu_casia_ds_mode = {
 
 
 _oulu_casia_get_data_set_args = {
-        '_images_root_path' : '/home/varsrao/Downloads/OriginalImg',
+        '_images_root_path' : './OriginalImg',
         '_max_im_per_seq' : 9,
         '_image_resolution' : (128, 128)
         }
@@ -347,3 +350,85 @@ def get_image_seq_apply_optical_flow_norm(img_seq_dir,
     images += images.min()
     return images
         
+
+############################ MER DATA SET: DEAM ###############################
+
+_deam_ds_config = {
+        '_spectro_path' : './deam/spectograms',
+        '_arousal_file_path' : './deam/arousal.csv',
+        '_valence_file_path' : './deam/valence.csv',
+        '_image_resolution' : (120, 240)
+        }
+
+
+class deam_ds(object):
+    
+    def __init__(self,
+                 _spectro_path, 
+                 _arousal_file_path,
+                 _valence_file_path,
+                 _image_resolution = None,
+                 nEntries = 1744,
+                 test_set_fraction = 0.0,
+                 shuffle_data = False):
+        '''
+        Input 1: Spectrogram Directory Path
+        Input 2: Arousal CSV File Path
+        Input 3: Valence CSV File Path
+        Input 4: Image Resolution (Width, Height) (Default: Original)
+        Input 5: Number of Entries to be read from CSV (Default: 1744)
+        Input 6: Test Set Fraction
+        Input 7: Shuffle Data (Default: True)
+        Purpose: Initialize the DEAM Dataset Class
+        Output: None
+        '''
+        # Validate Arguments
+        if not os.path.exists(_spectro_path):
+            raise Exception('Spectrogram Folder Path Invalid')
+            
+        arousal = pd.read_csv(_arousal_file_path, nrows = nEntries)
+        valence = pd.read_csv(_valence_file_path, nrows = nEntries)
+        arousal = arousal.values
+        valence = valence.values
+        valence_arousal_map = []
+        _start_col = 1
+        _end_col = 60
+        for row in range(arousal.shape[0]):
+            valence_arousal = valence[row][_start_col: _end_col + 1]
+            valence_arousal = np.r_[valence_arousal, arousal[row][
+                    _start_col: _end_col + 1]]
+            valence_arousal_map.append(valence_arousal)
+        valence_arousal_map = np.array(valence_arousal_map)
+        spectro_images  = []
+        # Convert images/spectograms to numpy arrays
+        for specto_file in sorted(os.listdir(_spectro_path)):
+            img = Image.open(_spectro_path + "/" + specto_file)
+            if _image_resolution:
+                img = img.resize(_image_resolution)
+            img_arr = np.array(img)
+            spectro_images.append(img_arr)
+        spectro_images = np.array(spectro_images)
+        self.X_train, self.X_test, self.y_train, self.y_test = (
+                train_test_split(spectro_images, valence_arousal_map,
+                                 test_size = test_set_fraction,
+                                 shuffle = shuffle_data))
+
+
+    def rot_right_spectrograms(self):
+        '''
+        Input: None
+        Purpose: Rotate the spectrograms in the dataset to the right so that
+                 the time domain is aligned along row and frequency along cols
+        Output: None
+        '''
+        self.X_train = np.flip(self.X_train, axis = 1).transpose((0, 2, 1, 3))
+        self.X_test = np.flip(self.X_test, axis = 1).transpose((0, 2, 1, 3))
+
+
+    def get_data_set(self):
+        '''
+        Input: None
+        Purpose: Getter function for the dataset
+        Output: [X_train, y_train, X_test, y_test]
+        '''
+        return [self.X_train, self.y_train, self.X_test, self.y_test]
