@@ -354,7 +354,7 @@ def get_image_seq_apply_optical_flow_norm(img_seq_dir,
 ############################ MER DATA SET: DEAM ###############################
 
 _deam_ds_config = {
-        '_spectro_path' : './deam/spectograms',
+        '_spectro_path' : './deam/spectrograms',
         '_arousal_file_path' : './deam/arousal.csv',
         '_valence_file_path' : './deam/valence.csv',
         '_image_resolution' : (120, 240)
@@ -445,4 +445,4 @@ class deam_ds(object):
         Purpose: Getter function to return the mean of the dataset
         Output: Data Set Mean
         '''
-        return self.mean
+        return self.ds_mean
