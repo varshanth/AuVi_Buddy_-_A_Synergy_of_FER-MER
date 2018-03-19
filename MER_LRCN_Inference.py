@@ -75,8 +75,8 @@ def load_spectrograms_from_dir(spectro_dir, resolution = None):
     
 
 def spectrograms_to_em_songpool_cache(spectro_dir,
-                                      resolution = None,
-                                      em_songpool_cache_pkl_file):
+                                      em_songpool_cache_pkl_file,
+                                      resolution = None):
     '''
     Input 1: Spectrograms Directory Path
     Input 2: Resolution of Image Desired (Default: Original)
@@ -100,7 +100,7 @@ def spectrograms_to_em_songpool_cache(spectro_dir,
     # Construct the Songpool Cache
     for song, emotion_set in zip(songs, emotion_sets_from_spectros):
         for emotion in emotion_set:
-            song_spectro_dic[emotion].append(song)
+            em_songpool_cache[emotion].append(song)
     # Write the Song Pool Cache to the pickle file
     with open(em_songpool_cache_pkl_file, "wb") as em_cache:
-        pickle.dump(song_spectro_dic, em_cache)
+        pickle.dump(em_songpool_cache, em_cache)

@@ -357,8 +357,6 @@ def get_image_seq_apply_optical_flow_norm(img_seq_dir,
 
 _deam_ds_config = {
         '_spectro_path' : './deam/spectrograms',
-        '_playlist_spectro_path' : './playlist/spectrograms',
-        '_playlist_song_path' : './playlist/songs',
         '_arousal_file_path' : './deam/arousal.csv',
         '_valence_file_path' : './deam/valence.csv',
         '_image_resolution' : (120, 240)

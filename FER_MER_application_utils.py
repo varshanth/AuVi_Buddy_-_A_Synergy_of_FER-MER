@@ -1,9 +1,8 @@
 from FER_LSTM_Inference import (load_an_image_sequence_from_dir,
                                 im_sequences_to_emotions)
-from FER_MER_data_set_utils import _deam_ds_config
-from MER_LRCN_Inference import spectrograms_to_em_songpool_cache
 import vlc
 import random
+import re
 import os
 import pickle
 
@@ -20,7 +19,9 @@ _emotion_reaction_switch_config = {
 
 _fer_mer_integration_config = {
         '_emotion_sequence_dir' : './emotion_sequence',
-        '_reaction_sequence_dir' : './reaction_sequence'
+        '_reaction_sequence_dir' : './reaction_sequence',
+        '_playlist_spectro_path' : './playlist/spectrograms',
+        '_playlist_song_path' : './playlist/songs'
         }
 
 
@@ -53,3 +54,22 @@ def load_em_songpool_cache(em_songpool_cache_pkl_file):
         raise Exception('Song Pool Cache File Path Invalid')
     em_songpool_cache = pickle.load(open(em_songpool_cache_pkl_file, 'rb'))
     return em_songpool_cache
+
+
+def process_playlist_and_return_song_to_songpath(
+        playlist_dir = _fer_mer_integration_config['_playlist_song_path']):
+    '''
+    Input 1: User Playlist directory
+             (Default taken from FER MER Integration Config)
+    Purpose: Sanity check playlist directory and return the songs and path of
+             each song as a dictionary keyed by the song file name
+    Output: {SongFileName : PathOfSong}
+    '''
+    if not os.path.exists(playlist_dir):
+        raise Exception('Playlist Path Invalid')
+    file_name_re = re.compile('(.*)\..*)')
+    song_path_dic = {}
+    for song_file in os.listdir(playlist_dir):
+        song_name = file_name_re.findall(song_file)[0]
+        song_path_dic[song_name] = playlist_dir + '/' + song_file
+    return song_path_dic
