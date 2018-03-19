@@ -357,6 +357,8 @@ def get_image_seq_apply_optical_flow_norm(img_seq_dir,
 
 _deam_ds_config = {
         '_spectro_path' : './deam/spectrograms',
+        '_playlist_spectro_path' : './playlist/spectrograms',
+        '_playlist_song_path' : './playlist/songs',
         '_arousal_file_path' : './deam/arousal.csv',
         '_valence_file_path' : './deam/valence.csv',
         '_image_resolution' : (120, 240)
@@ -389,7 +391,10 @@ class deam_ds(object):
         # Validate Arguments
         if not os.path.exists(_spectro_path):
             raise Exception('Spectrogram Folder Path Invalid')
-            
+        if not os.path.exists(_arousal_file_path):
+            raise Exception('Arousal File Path Invalid')
+        if not os.path.exists(_valence_file_path):
+            raise Exception('Valence File Path Invalid')
         arousal = pd.read_csv(_arousal_file_path, nrows = nEntries)
         valence = pd.read_csv(_valence_file_path, nrows = nEntries)
         arousal = arousal.values
@@ -527,13 +532,3 @@ def convert_a_v_vector_to_emotion_possibilities(arousal_vec, valence_vec):
     if 'Unmapped' in emotion_labels:
         emotion_labels.remove('Unmapped')
     return emotion_labels
-    
-    
-_fer_emotion_to_mer_emotion_mapping = {
-        'Happiness' : 'Happiness',
-        'Sadness' : 'Sadness',
-        'Anger' : 'Anger',
-        'Surprise' : 'Surprise',
-        'Fear' : 'Fear',
-        'Disgust' : 'Disgust'
-        }
