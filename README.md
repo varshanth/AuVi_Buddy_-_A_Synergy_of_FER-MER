@@ -44,6 +44,12 @@ https://blog.coast.ai/continuous-online-video-classification-with-tensorflow-inc
 Documentation will be updated soon  
  
 ## Music Emotion Recognition: Audio Spectrogram Classification using LRCN
+  
+Dataset Used: MediaEval's Database for Emotional Analysis in Music (DEAM)  
+  
+Aljanaki A, Yang Y-H, Soleymani M (2017) Developing a benchmark for emotional analysis of music. PLoS ONE 12(3): e0173392. https://doi.org/10.1371/journal.pone.0173392  
+
+
 Documentation will be updates soon  
 
 ### References:
