@@ -1,6 +1,3 @@
-from FER_LSTM_Inference import (load_an_image_sequence_from_dir,
-                                im_sequences_to_emotions)
-import vlc
 import random
 import re
 import os
@@ -21,7 +18,9 @@ _fer_mer_integration_config = {
         '_emotion_sequence_dir' : './emotion_sequence',
         '_reaction_sequence_dir' : './reaction_sequence',
         '_playlist_spectro_path' : './playlist/spectrograms',
-        '_playlist_song_path' : './playlist/songs'
+        '_playlist_song_path' : './playlist/songs',
+        '_em_songpool_cache_pkl' : './playlist/em_songpool_cache.pkl',
+        '_reaction_analysis_delay_in_sec' : 3
         }
 
 

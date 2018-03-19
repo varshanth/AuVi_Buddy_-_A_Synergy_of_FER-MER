@@ -36,7 +36,7 @@ def fer_inference_pipeline(test_image_sequences):
 
 def im_sequences_to_emotions(image_sequences):
     '''
-    Input: Sequence of Images
+    Input: Sequences of Images
     Purpose: Run FER Inference Pipeline and prediction the associated emotions
              for each sequence of images
     Output: Numpy array of emotions

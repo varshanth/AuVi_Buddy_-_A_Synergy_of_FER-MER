@@ -48,8 +48,8 @@ def spectrograms_to_emotions(spectrograms):
         emotion_set = convert_a_v_vector_to_emotion_possibilities(arousal_pred,
                                                                   valence_pred)
         emotion_sets.append(emotion_set)
-    emotion_set = np.array(emotion_set)
-    return emotion_set
+    emotion_sets = np.array(emotion_sets)
+    return emotion_sets
 
 
 def load_spectrograms_from_dir(spectro_dir, resolution = None):
@@ -79,8 +79,8 @@ def spectrograms_to_em_songpool_cache(spectro_dir,
                                       resolution = None):
     '''
     Input 1: Spectrograms Directory Path
-    Input 2: Resolution of Image Desired (Default: Original)
-    Input 3: Path to the emotions songpool cache pickle file
+    Input 2: Path to the emotions songpool cache pickle file
+    Input 3: Resolution of Image Desired (Default: Original)
     Purpose: Generate the emotion songpool cache file containing a mapping of
              possible emotions to the list of possible songs matching each of
              the emotions
