@@ -32,7 +32,9 @@ _oulu_casia_config = {
                 '_oulu_casia_get_data_set_args' :_oulu_casia_get_data_set_args,
                 '_im_per_seq' : _oulu_casia_get_data_set_args[
                         '_max_im_per_seq'],
-                '_emotion_label_to_idx' : copy(_emotion_label_to_idx)
+                '_emotion_label_to_idx' : copy(_emotion_label_to_idx),
+                '_emotion_idx_to_label' : {idx:label for label, idx in
+                                           _emotion_label_to_idx.items()}
                 }
                 
 
@@ -446,3 +448,92 @@ class deam_ds(object):
         Output: Data Set Mean
         '''
         return self.ds_mean
+    
+    
+def convert_arousal_valence_to_emotion(arousal, valence):
+    '''
+    Input 1: Arousal Value between -1 and 1
+    Input 2: Valence Value between -1 and 1
+    Purpose: Convert (Valence, Arousal) coordinate to a known emotion label
+             to emotion according to:
+    
+    Markov, Konstantin & Matsui, Tomoko. (2014). Music Genre and Emotion
+    Recognition Using Gaussian Processes. Access,
+    IEEE. 2. 688-697. 10.1109/ACCESS.2014.2333095. 
+    
+    Output: Emotion Label
+    '''
+    _neg_limit = -1.0
+    _pos_limit = 1.0
+    emotion = 6
+    _emotion_label = {
+            0 : "Anger",
+            1 : "Disgust",
+            2 : "Fear",
+            3 : "Happiness",
+            4 : "Sadness",
+            5 : "Surprise",
+            6 : "Unmapped"
+            }
+    
+    if(arousal < _neg_limit
+       or valence < _neg_limit
+       or arousal > _pos_limit
+       or valence > _pos_limit):
+        return _emotion_label[emotion]
+    
+    if(valence > 0.5):
+        if(arousal > 0.5): emotion = 6
+        else: emotion = 3
+    elif(valence > 0.0):
+        if(arousal > 0.5): emotion = 5
+        elif(arousal > 0.0): emotion = 3
+        else: emotion = 6
+    elif(arousal > 0.5):
+        if(valence < -0.5): emotion = 0
+        else: emotion = 2
+    elif(arousal > 0.0 and arousal <= 0.5):
+        if(valence < -0.5): emotion = 1
+        else: emotion = 2
+    elif(arousal > -0.5 and arousal <= 0.0):
+        emotion = 4
+    else:
+        emotion = 6
+    return _emotion_label[emotion]
+
+
+def convert_a_v_vector_to_emotion_possibilities(arousal_vec, valence_vec):
+    '''
+    Input 1: Arousal Vector - Numpy array of arousal values between -1 and 1
+    Input 2: Valence Vector - Numpy array of valence values between -1 and 1
+    Purpose: Return the unique set of emotions associated with the arousal
+             and valence vector based on the mean and standard deviation
+    Output: Numpy array of unique emotion values
+    '''
+    a_mean = arousal_vec.mean()
+    v_mean = valence_vec.mean()
+    a_std = arousal_vec.std()
+    v_std = arousal_vec.std()
+    a_deltas = [0, a_std, -a_std]
+    v_deltas = [0, v_std, -v_std]
+    emotion_labels = []
+    for a_delta in a_deltas:
+        for v_delta in v_deltas:
+            arousal = a_mean + a_delta
+            valence = v_mean + v_delta
+            emotion_labels.append(convert_arousal_valence_to_emotion(arousal,
+                                                                     valence))
+    emotion_labels = set(emotion_labels)
+    if 'Unmapped' in emotion_labels:
+        emotion_labels.remove('Unmapped')
+    return emotion_labels
+    
+    
+_fer_emotion_to_mer_emotion_mapping = {
+        'Happiness' : 'Happiness',
+        'Sadness' : 'Sadness',
+        'Anger' : 'Anger',
+        'Surprise' : 'Surprise',
+        'Fear' : 'Fear',
+        'Disgust' : 'Disgust'
+        }

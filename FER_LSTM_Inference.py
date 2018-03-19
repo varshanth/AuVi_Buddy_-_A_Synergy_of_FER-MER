@@ -2,6 +2,7 @@ from FER_LSTM_Train import _model_save_file_path
 import os
 from keras.models import load_model
 from FER_CNN_Inference import fer_cnn_get_latent_rep_from_sequences
+from FER_MER_data_set_utils import _oulu_casia_config
 from PIL import Image
 import numpy as np
 
@@ -12,7 +13,6 @@ def _fer_lstm_inference(test_sequences):
              2) Run the model and predict the output
     Output: Categorical Predictions
     '''
-    ############################ LOAD MODEL ###################################
     if not os.path.exists(_model_save_file_path):
         raise Exception('Model file {0} does not exist'.format(
                 _model_save_file_path))
@@ -32,6 +32,22 @@ def fer_inference_pipeline(test_image_sequences):
     latent_X = fer_cnn_get_latent_rep_from_sequences(test_image_sequences)
     predictions = _fer_lstm_inference(latent_X)
     return predictions
+
+
+def im_sequences_to_emotions(image_sequences):
+    '''
+    Input: Sequence of Images
+    Purpose: Run FER Inference Pipeline and prediction the associated emotions
+             for each sequence of images
+    Output: Numpy array of emotions
+    '''
+    categ_predictions = fer_inference_pipeline(image_sequences)
+    emotion_indices = np.argmax(categ_predictions, axis = 1)
+    emotion_labels = map(
+            lambda idx:_oulu_casia_config['_emotion_idx_to_label'][idx],
+            emotion_indices)
+    emotion_labels = np.array(emotion_labels)
+    return emotion_labels
 
 
 def load_an_image_sequence_from_dir(sequence_dir,

@@ -19,6 +19,7 @@ if __name__ == '__main__':
     input_shape = (*_deam_ds_config['_image_resolution'], 3)
     model = mer_spectro_net(input_shape)
     model.summary()
+    
     ############################# TRAIN MODEL #################################
     # Training Configuration
     _batch_size = 16
@@ -26,7 +27,7 @@ if __name__ == '__main__':
     
     model.compile(optimizer = 'adam', 
     				loss = 'mean_squared_error',
-    				metrics=['mean_squared_error'])
+    				metrics=['mean_squared_error', 'mean_absolute_error'])
     model.fit(X_train, y_train, validation_data = (X_test, y_test), 
               epochs = _n_epochs, batch_size = _batch_size)
     if save_model:

@@ -29,7 +29,7 @@ Some appropriate responses can be (not limited to):
 ## Scope of Project:  
 We limit the scope of this project to developing the trigger of Facial Expression Recognition (FER) (1a) and deliver the responses of Music Therapy (3a), Emotional State Statistics (3f) and if time permits, Visual Therapy (3b).
 
-## Facial Expression Recognition: Video Classification using CNN - RNN Pipeline  
+## Facial Expression Recognition: Video (Multi-frame) Classification using LRCN  
 Datasets Used:  
 
 1. Oulu CASIA NIR & VIS Facial Expression Database:  
@@ -41,7 +41,6 @@ recognition from near-infrared videos. Image and Vision Computing,
 1. The little "bird" which helped us to go in the right direction:  
 https://blog.coast.ai/continuous-online-video-classification-with-tensorflow-inception-and-a-raspberry-pi-785c8b1e13e1
   
-Documentation will be updated soon  
  
 ## Music Emotion Recognition: Audio Spectrogram Classification using LRCN
   
@@ -49,8 +48,6 @@ Dataset Used: MediaEval's Database for Emotional Analysis in Music (DEAM)
   
 Aljanaki A, Yang Y-H, Soleymani M (2017) Developing a benchmark for emotional analysis of music. PLoS ONE 12(3): e0173392. https://doi.org/10.1371/journal.pone.0173392  
 
-
-Documentation will be updates soon  
 
 ### References:
 1. The best explanation I have read on choosing CNN filter sizes for spectrograms by Jordi Pons:  
