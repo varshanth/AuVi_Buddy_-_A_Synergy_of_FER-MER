@@ -34,7 +34,6 @@ _fer_emotion_to_mer_emotion_mapping = {
         }
 
 
-
 def get_random_song_from_choices(choices):
     '''
     Input 1: Numpy array or list of song choices

@@ -1,9 +1,8 @@
 from MER_LRCN_Train import _model_save_file_path
 import os
 from keras.models import load_model
-from FER_MER_data_set_utils import (_fer_emotion_to_mer_emotion_mapping,
-                                    convert_a_v_vector_to_emotion_possibilities
-                                    )
+from FER_MER_data_set_utils import convert_a_v_vector_to_emotion_possibilities
+from FER_MER_application_utils import _fer_emotion_to_mer_emotion_mapping
 import numpy as np
 import re
 from PIL import Image
