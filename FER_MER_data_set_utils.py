@@ -530,3 +530,13 @@ def convert_a_v_vector_to_emotion_possibilities(arousal_vec, valence_vec):
     if 'Unmapped' in emotion_labels:
         emotion_labels.remove('Unmapped')
     return emotion_labels
+
+
+def rotate_right_spectrograms(spectrograms):
+    '''
+    Input 1: Numpy array of spectrograms
+    Purpose: Rotate the spectrograms in the dataset to the right so that
+             the time domain is aligned along row and frequency along cols
+    Output: Right Rotated Spectrograms
+    '''
+    return np.flip(spectrograms, axis = 1).transpose((0, 2, 1, 3))
