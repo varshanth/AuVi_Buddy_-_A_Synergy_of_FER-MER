@@ -63,7 +63,7 @@ def load_spectrograms_from_dir(spectro_dir, resolution = None):
     if not os.path.exists(spectro_dir):
         raise Exception('Invalid Directory Provided')
     song_spectro_dic = {}
-    file_name_re = re.compile('(.*)\..*)')
+    file_name_re = re.compile('(.*)\..*')
     for spec_file_name in os.listdir(spectro_dir):
         spec = Image.open(spectro_dir + '/' +spec_file_name)
         if resolution:
@@ -94,7 +94,8 @@ def spectrograms_to_em_songpool_cache(spectro_dir,
     # Get Songs
     songs = song_spectro_dic.keys()
     # Get spectrograms
-    spectros = np.array(song_spectro_dic.values())
+    song_spectro_dic_vals = list(song_spectro_dic.values())
+	spectros = np.array(song_spectro_dic_vals)
     # For each spectrogram get the possible emotion set associated with it
     emotion_sets_from_spectros = spectrograms_to_emotions(spectros)
     # Construct the Songpool Cache
