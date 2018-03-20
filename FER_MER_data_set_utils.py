@@ -464,37 +464,36 @@ def convert_arousal_valence_to_emotion(arousal, valence):
     Output: Emotion Label
     '''
     _neg_limit = -1.0
-	_pos_limit = 1.0
-			
-	emotion = 5
-	_emotion_label = {
-			0 : "Anger",
-			1 : "Fear",
-			2 : "Happiness",
-			3 : "Sadness",
-			4 : "Calm",
-			5 : "Unmapped"}
-
-	if(arousal < _neg_limit
+    _pos_limit = 1.0
+    emotion = 5
+    _emotion_label = {
+            0 : "Anger",
+            1 : "Fear",
+            2 : "Happiness",
+            3 : "Sadness",
+            4 : "Calm",
+            5 : "Unmapped"
+            }
+    if(arousal < _neg_limit
        or valence < _neg_limit
        or arousal > _pos_limit
        or valence > _pos_limit):
-      return _emotion_label[emotion]
-
-	if(valence > 0.5):
-		  emotion = 2
-	elif(valence > 0.3):
-      if(arousal > -0.25): emotion = 2
-      else: emotion = 4
-	elif(valence > -0.4):
-      if(arousal > 0.5): emotion = 1
-      elif(arousal > 0.2): emotion = 0
-      elif(arousal > -0.3): emotion = 3
-      else: emotion = 4
-	else:
-      if(arousal > 0.2): emotion = 0
-      else: emotion = 3
-	return _emotion_label[emotion]
+        return _emotion_label[emotion]
+    
+    if(valence > 0.5):
+        emotion = 2
+    elif(valence > 0.3):
+        if(arousal > -0.25): emotion = 2
+        else: emotion = 4
+    elif(valence > -0.4):
+        if(arousal > 0.5): emotion = 1
+        elif(arousal > 0.2): emotion = 0
+        elif(arousal > -0.3): emotion = 3
+        else: emotion = 4
+    else:
+        if(arousal > 0.2): emotion = 0
+        else: emotion = 3
+    return _emotion_label[emotion]
 
 
 def convert_a_v_vector_to_emotion_possibilities(arousal_vec, valence_vec):
