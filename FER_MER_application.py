@@ -69,8 +69,14 @@ reaction_emotion_found = im_sequences_to_emotions(img_seq)[0]
 print('Reaction Emotion Found {0}'.format(reaction_emotion_found))
 
 ######### SWITCH SONG IF REACTION NEGATIVE ELSE KEEP PLAYING SONG #############
+get_emotions_resulting_switch = {
+        em for em, action in _emotion_reaction_switch_config.items()
+        if action == 'Switch'}
 
 action_required = _emotion_reaction_switch_config[reaction_emotion_found]
+if initial_emotion_found in get_emotions_resulting_switch:
+    action_required = 'Retain'
+    
 print('Action Required: {0}'.format(action_required))
 if action_required == 'Switch':
     print('Stopping Song')

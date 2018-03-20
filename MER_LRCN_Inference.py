@@ -95,7 +95,7 @@ def spectrograms_to_em_songpool_cache(spectro_dir,
     songs = song_spectro_dic.keys()
     # Get spectrograms
     song_spectro_dic_vals = list(song_spectro_dic.values())
-	spectros = np.array(song_spectro_dic_vals)
+    spectros = np.array(song_spectro_dic_vals)
     # For each spectrogram get the possible emotion set associated with it
     emotion_sets_from_spectros = spectrograms_to_emotions(spectros)
     # Construct the Songpool Cache

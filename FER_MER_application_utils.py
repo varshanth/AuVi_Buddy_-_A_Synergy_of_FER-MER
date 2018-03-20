@@ -7,7 +7,7 @@ import pickle
 _emotion_reaction_switch_config = {
         # Reaction to Song : # Action
         'Anger' : 'Switch',
-        'Surprise' : 'Switch',
+        'Surprise' : 'Retain',
         'Sadness' : 'Switch',
         'Disgust' : 'Switch',
         'Happiness' : 'Retain',
