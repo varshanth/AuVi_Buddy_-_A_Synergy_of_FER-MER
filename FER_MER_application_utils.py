@@ -14,6 +14,7 @@ _emotion_reaction_switch_config = {
         'Fear' : 'Retain'
         }
 
+
 _fer_mer_integration_config = {
         '_emotion_sequence_dir' : './emotion_sequence',
         '_reaction_sequence_dir' : './reaction_sequence',
