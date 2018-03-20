@@ -43,9 +43,9 @@ def im_sequences_to_emotions(image_sequences):
     '''
     categ_predictions = fer_inference_pipeline(image_sequences)
     emotion_indices = np.argmax(categ_predictions, axis = 1)
-    emotion_labels = map(
+    emotion_labels = list(map(
             lambda idx:_oulu_casia_config['_emotion_idx_to_label'][idx],
-            emotion_indices)
+            emotion_indices))
     emotion_labels = np.array(emotion_labels)
     return emotion_labels
 
