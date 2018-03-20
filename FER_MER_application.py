@@ -1,15 +1,16 @@
 from FER_LSTM_Inference import (load_an_image_sequence_from_dir,
-                                im_sequences_to_emotions,
-                                process_playlist_and_return_song_to_songpath,
-                                _fer_emotion_to_mer_emotion_mapping,
-                                _emotion_reaction_switch_config)
+                                im_sequences_to_emotions)
 from MER_LRCN_Inference import spectrograms_to_em_songpool_cache
 from FER_MER_data_set_utils import (_deam_ds_config,
                                     _oulu_casia_get_data_set_args)
 import vlc
-from FER_MER_application_utils import (_fer_mer_integration_config,
-                                       load_em_songpool_cache,
-                                       get_random_song_from_choices)
+from FER_MER_application_utils import (
+        _fer_mer_integration_config,
+        load_em_songpool_cache,
+        get_random_song_from_choices,
+        process_playlist_and_return_song_to_songpath,
+        _fer_emotion_to_mer_emotion_mapping,
+        _emotion_reaction_switch_config)
 import os
 import numpy as np
 from time import sleep
