@@ -458,25 +458,21 @@ def convert_arousal_valence_to_emotion(arousal, valence):
     Input 1: Arousal Value between -1 and 1
     Input 2: Valence Value between -1 and 1
     Purpose: Convert (Valence, Arousal) coordinate to a known emotion label
-             to emotion according to:
-    
-    Markov, Konstantin & Matsui, Tomoko. (2014). Music Genre and Emotion
-    Recognition Using Gaussian Processes. Access,
-    IEEE. 2. 688-697. 10.1109/ACCESS.2014.2333095. 
+             to emotion according to standard Valence Arousal Map generalizing
+             over 5 emotions
     
     Output: Emotion Label
     '''
     _neg_limit = -1.0
     _pos_limit = 1.0
-    emotion = 6
+    emotion = 5
     _emotion_label = {
             0 : "Anger",
-            1 : "Disgust",
-            2 : "Fear",
-            3 : "Happiness",
-            4 : "Sadness",
-            5 : "Surprise",
-            6 : "Unmapped"
+            1 : "Fear",
+            2 : "Happiness",
+            3 : "Sadness",
+            4 : "Calm",
+            5 : "Unmapped"
             }
     
     if(arousal < _neg_limit
@@ -485,23 +481,18 @@ def convert_arousal_valence_to_emotion(arousal, valence):
        or valence > _pos_limit):
         return _emotion_label[emotion]
     
-    if(valence > 0.5):
-        if(arousal > 0.5): emotion = 6
-        else: emotion = 3
-    elif(valence > 0.0):
-        if(arousal > 0.5): emotion = 5
-        elif(arousal > 0.0): emotion = 3
-        else: emotion = 6
+    if(valence > 0):
+        if(arousal <= -0.5 and valence <= 0.5): emotion = 4
+        else: emotion = 2
     elif(arousal > 0.5):
-        if(valence < -0.5): emotion = 0
-        else: emotion = 2
-    elif(arousal > 0.0 and arousal <= 0.5):
-        if(valence < -0.5): emotion = 1
-        else: emotion = 2
-    elif(arousal > -0.5 and arousal <= 0.0):
-        emotion = 4
+        if(valence >= -0.25): emotion = 1
+        else: emotion = 0
+    elif(arousal > 0):
+        emotion = 0
+    elif(valence <= -0.5 or arousal >= -0.25):
+        emotion = 3
     else:
-        emotion = 6
+        emotion = 4
     return _emotion_label[emotion]
 
 

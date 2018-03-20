@@ -28,9 +28,9 @@ _fer_emotion_to_mer_emotion_mapping = {
         'Happiness' : 'Happiness',
         'Sadness' : 'Sadness',
         'Anger' : 'Anger',
-        'Surprise' : 'Surprise',
-        'Fear' : 'Fear',
-        'Disgust' : 'Disgust'
+        'Surprise' : 'Calm',
+        'Fear' : 'Calm',
+        'Disgust' : 'Calm'
         }
 
 
@@ -40,7 +40,7 @@ def get_random_song_from_choices(choices):
     Purpose: Return a random song from the list of songs
     Output: A random element from the choices list
     '''
-    return random.choices(choices)
+    return random.choice(choices)
 
 
 def load_em_songpool_cache(em_songpool_cache_pkl_file):
