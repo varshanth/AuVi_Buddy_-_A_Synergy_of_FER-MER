@@ -42,16 +42,20 @@ img_seq = load_an_image_sequence_from_dir(
 # Pack Image Sequence inside a numpy array to denote a single sequence
 img_seq = np.array([img_seq])
 initial_emotion_found = im_sequences_to_emotions(img_seq)[0]
+print('Initial Emotion Detected: {0}'.format(initial_emotion_found))
 
 ########### MAP RECOGNIZED EMOTION TO RECIPROCATION EMOTION ###################
 
 music_emotion_reqd = _fer_emotion_to_mer_emotion_mapping[initial_emotion_found]
+print('Mapping to Music Emotion: {0}'.format(music_emotion_reqd))
 song_choices_from_playlist = em_songpool_cache[music_emotion_reqd]
 random_song_from_choices = get_random_song_from_choices(
         song_choices_from_playlist)
+print('Playing Song: {0}'.format(random_song_from_choices))
 
 ############## PLAY SONG AND ANALYZE REACTION AFTER DELAY #####################
 
+print('Analyzing Reaction')
 song_loaded = vlc.MediaPlayer(song_to_songpath[random_song_from_choices])
 song_loaded.play()
 sleep(_fer_mer_integration_config['_reaction_analysis_delay_in_sec'])
@@ -62,14 +66,18 @@ img_seq = load_an_image_sequence_from_dir(
 # Pack Image Sequence inside a numpy array to denote a single sequence
 img_seq = np.array([img_seq])
 reaction_emotion_found = im_sequences_to_emotions(img_seq)[0]
+print('Reaction Emotion Found {0}'.format(reaction_emotion_found))
 
 ######### SWITCH SONG IF REACTION NEGATIVE ELSE KEEP PLAYING SONG #############
 
 action_required = _emotion_reaction_switch_config[reaction_emotion_found]
+print('Action Required: {0}'.format(action_required))
 if action_required == 'Switch':
+    print('Stopping Song')
     song_loaded.stop()
     random_song_from_choices = get_random_song_from_choices(
         song_choices_from_playlist)
+    print('Playing Song: {0}'.format(random_song_from_choices))
     song_loaded = vlc.MediaPlayer(song_to_songpath[random_song_from_choices])
     song_loaded.play()
     
