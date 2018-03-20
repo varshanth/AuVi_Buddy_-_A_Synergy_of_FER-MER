@@ -482,13 +482,13 @@ def convert_arousal_valence_to_emotion(arousal, valence):
     
     if(valence > 0.5):
         emotion = 2
-    elif(valence > 0.3):
+    elif(valence > 0.26):
         if(arousal > -0.25): emotion = 2
         else: emotion = 4
     elif(valence > -0.4):
         if(arousal > 0.5): emotion = 1
-        elif(arousal > 0.2): emotion = 0
-        elif(arousal > -0.3): emotion = 3
+        elif(arousal > 0.18): emotion = 0
+        elif(arousal > -0.22): emotion = 3
         else: emotion = 4
     else:
         if(arousal > 0.2): emotion = 0
