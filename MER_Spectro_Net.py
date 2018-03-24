@@ -75,10 +75,10 @@ def mer_spectro_net(_input_shape,
                                           return_sequences = True,
                                           activation = 'tanh'))(f_time_dis_out)
     v_dropout_out = Dropout(0.2)(valence_lstm_out)
-    valence_lstm_out = Bidirectional(LSTM(_hidden_units_LSTM,
+    valence_lstm_out = Bidirectional(LSTM(_hidden_units_LSTM // 2,
                                           activation = 'tanh'))(v_dropout_out)
     
-    arousal_lstm_out = Bidirectional(LSTM(_hidden_units_LSTM // 2,
+    arousal_lstm_out = Bidirectional(LSTM(_hidden_units_LSTM,
                                           return_sequences = True,
                                           activation = 'tanh'))(f_time_dis_out)
     a_dropout_out = Dropout(0.2)(arousal_lstm_out)
