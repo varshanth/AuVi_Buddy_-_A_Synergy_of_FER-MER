@@ -31,7 +31,8 @@ _fer_emotion_to_mer_emotion_mapping = {
         'Anger' : 'Anger',
         'Surprise' : 'Calm',
         'Fear' : 'Calm',
-        'Disgust' : 'Calm'
+        'Disgust' : 'Calm',
+        'NotUsed' : 'Fear'
         }
 
 
