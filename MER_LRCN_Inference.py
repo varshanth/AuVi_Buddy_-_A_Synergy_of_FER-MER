@@ -2,7 +2,8 @@ from MER_LRCN_Train import _model_save_file_path
 import os
 from keras.models import load_model
 from FER_MER_data_set_utils import (
-        convert_a_v_vector_to_emotion_possibilities, rotate_right_spectrograms)
+        convert_a_v_vector_to_emotion_possibilities, rotate_right_spectrograms,
+        deam_ds, _deam_ds_config)
 from FER_MER_application_utils import _fer_emotion_to_mer_emotion_mapping
 import numpy as np
 import re
@@ -43,6 +44,8 @@ def spectrograms_to_emotions(spectrograms):
     Output: Return a numpy array of possible emotion labels associated with the
             respective spectrograms
     '''
+    deam_data_set = deam_ds(**_deam_ds_config)
+    spectrograms = (spectrograms - deam_data_set.ds_mean) / 255
     right_rotated_spectrograms = rotate_right_spectrograms(spectrograms)
     valence_preds, arousal_preds = _mer_lrcn_inference(
             right_rotated_spectrograms)
