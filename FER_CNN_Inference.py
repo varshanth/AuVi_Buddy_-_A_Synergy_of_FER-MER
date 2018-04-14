@@ -38,7 +38,6 @@ def fer_cnn_get_latent_rep_from_sequences(image_sequences):
              3) Return the Latent Representation from the images
     Output: Latent representation of the image sequence
     '''
-        ############################ LOAD MODEL ###################################
     if not os.path.exists(_model_save_file_path):
         raise Exception('Model file {0} does not exist'.format(
                 _model_save_file_path))
