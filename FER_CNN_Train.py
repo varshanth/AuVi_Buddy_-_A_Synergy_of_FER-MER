@@ -11,8 +11,7 @@ _checkpoint_file_name = 'FER_CNN_weights_best.h5'
 
 if __name__ == '__main__':
     ############### LOAD MODIFIED EXPANDED OULU CASIA DATASET #################
-    oulu_casia_dataset = oulu_casia_ds(dataset_mode = 'modified_expanded',
-                                       normalize_mode='optical_flow')
+    oulu_casia_dataset = oulu_casia_ds(dataset_mode = 'modified_expanded')
     _oulu_casia_dataset_config = oulu_casia_dataset.get_data_set_config()
     _num_classes = len(_oulu_casia_dataset_config['_emotion_label_to_idx'])
     img_shape = _oulu_casia_dataset_config['_oulu_casia_get_data_set_args'][
